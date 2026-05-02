@@ -9,6 +9,9 @@ on:
     branches:
       - '**'
 
+permissions:
+  contents: write
+
 jobs:
   build:
 
@@ -43,3 +46,8 @@ jobs:
       with:
         name: Arclight 
         path: ./build/libs/*.jar
+    - name: Publish Release
+      if: github.event_name == 'workflow_dispatch'
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: gh release create "trials-${GITHUB_SHA::7}" ./build/libs/*.jar --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "Trials ${GITHUB_SHA::7}" --notes "Arclight Trials build with Nether portal coordinate fix."
